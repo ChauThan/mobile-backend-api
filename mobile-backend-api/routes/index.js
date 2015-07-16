@@ -5,6 +5,8 @@ var text = require('./text.js');
 
 // public routes 
 router.get('/', auth.index);
+router.post('/regist', auth.regist);
+router.post('/login', auth.login);
 
 // Text
 router.get('/api/texts', text.getAll);

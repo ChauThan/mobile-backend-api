@@ -17,8 +17,8 @@ var text = {
     create: function(req, res) {
         var body = req.body;
         Text.forge({
-                UserId: 1,
-                Text: body.text
+                userId: 1,
+                text: body.text
             })
             .save()
             .then(function(entity) {
@@ -28,9 +28,9 @@ var text = {
     update: function(req, res) {
         var id = req.params.id;
         Text.forge({
-                Id: id,
-                UserId: 1,
-                Text: body.text
+                id: id,
+                userId: 1,
+                text: body.text
             })
             .save()
             .then(function(entity) {
@@ -45,7 +45,7 @@ var text = {
             .then(function(entity) {
                 entity.destroy()
                     .then(function() {
-                        res.json({success: "true"});
+                        res.json({status: "success"});
                     });
             });
     }

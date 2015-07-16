@@ -4,9 +4,9 @@ var knex = require('knex')(config.db);
 var bookshelf = require('bookshelf')(knex);
 
 exports.User = bookshelf.Model.extend({
-    tableName: 'Users'
+    tableName: 'users'
 });
 
 exports.Text = bookshelf.Model.extend({
-    tableName: 'Texts'
+    tableName: 'texts'
 });

@@ -1,5 +1,7 @@
 ﻿var User = require('../models').User;
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var config = require('../config');
 
 var auth = {
     index: function(req, res) {
@@ -14,7 +16,7 @@ var auth = {
         .then(function(entity) {
             if (entity != null) {
                 res.status(200).json({
-                    status: "error",
+                    success: false,
                     message: "Username is already exist"
                 });
             }
@@ -26,22 +28,51 @@ var auth = {
                     username: req.body.username,
                     password: hash
                 }).save()
-                .then(function (user) {
-                    delete user.attributes.password;
+                .then(function(user) {
                     res.status(200).json({
-                        status: "success",
-                        user: user
+                        success: true,
+                        token: generateToken(user)
                     });
                 });
-
         });
     },
     login: function(req, res) {
-        res.status(200).json({
-            status: "success",
-            message: "login"
-        });
+        User.forge({
+                username: req.body.username
+            })
+            .fetch()
+            .then(function(user) {
+                if (user == null) {
+                    return invalid(req, res);
+                }
+
+                if (!bcrypt.compareSync(req.body.password, user.get('password'))) {
+                    return invalid(req, res);
+                }
+
+                var token = jwt.sign(user, 'ABCDEF', {
+                    expiresInMinutes: 1440
+                });
+
+                return res.json({
+                    success: true,
+                    token: generateToken(user)
+                });
+            });
     }
+}
+
+function invalid(req, res) {
+    res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+    });
+}
+
+function generateToken(user) {
+    return jwt.sign(user, config.token.text, {
+        expiresInMinutes: config.token.expiresInMinutes
+    });
 }
 
 module.exports = auth;

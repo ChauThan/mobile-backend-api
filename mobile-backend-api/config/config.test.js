@@ -10,6 +10,10 @@
             charset : 'utf8',
             port    : '33066'
         }
+    },
+    token: {
+        text: 'randomtext',
+        expireInMinutes: 1440
     }
 }
 

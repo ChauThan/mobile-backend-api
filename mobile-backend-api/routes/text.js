@@ -2,51 +2,113 @@
 
 var text = {
     getAll: function(req, res) {
-        res.json({
-            message: "All Text"
-        });
+        Text.forge({})
+            .where({
+                userId: req.user.id
+            })
+            .fetchAll()
+            .then(function(collections) {
+                res.json(collections);
+            })
+            .catch(function(err) {
+                res.status(500).json({
+                    success: false,
+                    message: err.message
+                });
+            });
+
     },
     get: function(req, res) {
         var id = req.params.id;
-        Text.forge({ Id: id })
+        Text.forge({
+                Id: id,
+                userId: req.user.id
+            })
             .fetch()
-            .then(function(entity) {
-                res.json(entity);
+            .then(function (entity) {
+                if (entity == null) {
+                    res.status(500).json({
+                        success: false,
+                        message: 'Can not found'
+                    });
+                } else {
+                    res.json({
+                        success: true,
+                        text: entity
+                    });
+                }
+                
+            })
+            .catch(function(err) {
+                res.status(500).json({
+                    success: false,
+                    message: err.message
+                });
             });
     },
     create: function(req, res) {
         var body = req.body;
         Text.forge({
-                userId: 1,
+                userId: req.user.id,
                 text: body.text
             })
             .save()
             .then(function(entity) {
-                res.json(entity);
+                res.json({
+                    success: true,
+                    text: entity
+                });
+            })
+            .catch(function(err) {
+                res.status(500).json({
+                    success: false,
+                    message: err.message
+                });
             });
     },
     update: function(req, res) {
         var id = req.params.id;
         Text.forge({
                 id: id,
-                userId: 1,
-                text: body.text
+                userId: req.user.id,
+                text: req.body.text
             })
             .save()
             .then(function(entity) {
                 res.json(entity);
+            })
+            .catch(function(err) {
+                res.status(500).json({
+                    success: false,
+                    message: err.message
+                });
             });
     },
     delete: function(req, res) {
         var id = req.params.id;
         Text.forge({})
-            .where({ id: id })
+            .where({
+                id: id,
+                userId: req.user.id
+            })
             .fetch()
             .then(function(entity) {
                 entity.destroy()
                     .then(function() {
-                        res.json({status: "success"});
+                        res.json({ success: true });
+                    })
+                    .catch(function(err) {
+                        res.status(500).json({
+                            success: false,
+                            message: err.message
+                        });
                     });
+            })
+            .catch(function(err) {
+                res.status(500).json({
+                    success: false,
+                    message: err.message
+                });
             });
     }
 }

@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="config\config.development.js" />
+    <Compile Include="config\config.test.js" />
     <Compile Include="config\index.js" />
     <Compile Include="models\index.js" />
     <Compile Include="routes\auth.js" />

@@ -20,13 +20,14 @@ var auth = {
                     message: "Username is already exist"
                 });
             }
-
-            var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(req.body.password, salt);
+            
+            // You can use again if you want.
+            //var salt = bcrypt.genSaltSync(10);
+            //var hash = bcrypt.hashSync(req.body.password, salt);
 
             User.forge({
                     username: req.body.username,
-                    password: hash
+                    password: req.body.password
                 }).save()
                 .then(function(user) {
                     res.status(200).json({
@@ -46,7 +47,8 @@ var auth = {
                     return invalid(req, res);
                 }
 
-                if (!bcrypt.compareSync(req.body.password, user.get('password'))) {
+                //if (!bcrypt.compareSync(req.body.password, user.get('password'))) {
+                if (req.body.password != user.get('password')) {
                     return invalid(req, res);
                 }
 

@@ -31,6 +31,7 @@ Login by MySql Management such as Heidi, MySQL Workbench to manage your database
 ## Install Reverse Proxy Server - nginx
 1. Install   
 `sudo apt-get install nginx`
+
 2. Config  
 `sudo vi /etc/nginx/sites-available/default`
 
@@ -54,3 +55,37 @@ Login by MySql Management such as Heidi, MySQL Workbench to manage your database
         }
 3. Restart 
 `sudo service nginx restart`
+
+4. Use ssl
+    1. Make certificate files. Please follow url to make certificate files  
+https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04
+    2. Edit `sudo vi /etc/nginx/sites-available/default`
+
+
+        server {
+          listen 443 ssl;
+
+          ssl on;
+          ssl_certificate /etc/nginx/ssl/server.crt;
+          ssl_certificate_key /etc/nginx/ssl/server.key;
+
+          server_name example.com;
+
+          location / {
+              proxy_pass http://127.0.0.1:8080;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection 'upgrade';
+              proxy_set_header Host $host;
+              proxy_cache_bypass $http_upgrade;
+          }
+        }
+        server {
+          listen      80;
+          server_name example.com;
+          rewrite     ^   https://$server_name$request_uri? permanent;
+        }   
+
+    3. Restart  
+`sudo service nginx restart`
+

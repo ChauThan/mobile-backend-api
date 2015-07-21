@@ -1,5 +1,6 @@
 ﻿var express = require('express');
 var path = require('path');
+var fs = require('fs');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
@@ -7,9 +8,11 @@ var config = require('./config');
 
 var routes = require('./routes/index');
 
+var accessLogStream = fs.createWriteStream(__dirname + '/access.log', { flags: 'a' });
+
 var app = express();
 
-app.use(logger('dev'));
+app.use(logger('common', { stream: accessLogStream }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

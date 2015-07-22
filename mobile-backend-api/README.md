@@ -61,6 +61,7 @@ Login by MySql Management such as Heidi, MySQL Workbench to manage your database
 https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04
     2. Edit `sudo vi /etc/nginx/sites-available/default`
 
+  Clear all text and copy below text  
 
         server {
           listen 443 ssl;
